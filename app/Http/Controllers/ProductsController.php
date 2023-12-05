@@ -158,8 +158,7 @@ class ProductsController extends Controller {
                     'message' => 'Продукт не найден',
                 ], JsonResponse::HTTP_BAD_REQUEST);
             }
-
-            $existingSubscription = Subscription::where('user_id', Auth::user()->id)->where('product_id', $product->id);
+            $existingSubscription = Subscription::where('user_id', Auth::user()->id)->where('product_id', $product->id)->first();
             if ($existingSubscription) {
                 $existingSubscription->update([
                     'is_favourite' => true,
