@@ -96,7 +96,7 @@ class ProductsController extends Controller {
                 'name' => $request->name,
                 'price' => $request->price,
                 'description' => $request->description,
-                'image' => SaveFileTrait::saveFile($request->image),
+                'image' => $request->image ? SaveFileTrait::saveFile($request->image) : null,
             ]);
 
             return response()->json($product, JsonResponse::HTTP_OK);
