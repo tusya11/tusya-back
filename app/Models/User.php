@@ -72,6 +72,6 @@ class User extends Authenticatable {
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function subscriptions(): HasMany {
-        return $this->HasMany(Subscription::class, 'user_id', 'id');
+        return $this->hasMany(Subscription::class, 'user_id', 'id');
     }
 }

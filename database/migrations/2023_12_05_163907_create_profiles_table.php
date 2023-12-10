@@ -12,11 +12,11 @@ return new class extends Migration {
         Schema::create('profiles', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->string('first_name');
-            $table->string('middle_name');
-            $table->string('second_name');
-            $table->string('phone');
-            $table->string('gender');
+            $table->string('first_name')->nullable();
+            $table->string('middle_name')->nullable();
+            $table->string('second_name')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('gender')->nullable();
             $table->timestamps();
         });
     }

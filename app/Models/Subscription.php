@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Subscription extends Model {
     use HasFactory;
@@ -26,11 +26,12 @@ class Subscription extends Model {
     }
 
     /**
-     * The subscription that owns by Products
+     * Get the product associated with the Subscription
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function products(): HasMany {
-        return $this->hasMany(Product::class);
+    public function product(): HasOne {
+        return $this->hasOne(Product::class, 'id', 'product_id');
+
     }
 }

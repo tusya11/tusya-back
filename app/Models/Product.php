@@ -4,22 +4,26 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Product extends Model {
     use HasFactory;
 
     protected $fillable = [
+        'category_id',
         'name',
         'price',
+        'description',
+        'image',
     ];
 
     /**
-     * The Product that belong to the Subscription
+     * The categories that belong to the Product
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function subscriptions(): BelongsToMany {
-        return $this->belongsToMany(Subscription::class);
+    public function category(): BelongsTo {
+        return $this->belongsTo(Category::class, 'category_id', 'id');
     }
+
 }

@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -22,14 +24,31 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
-    Route::get('products', [ProductsController::class, 'getAll']);
-    Route::get('products/{id}', [ProductsController::class, 'getById']);
-    Route::post('products/', [ProductsController::class, 'create'])->middleware(['checkRole:Администратор']);
-    Route::post('products/{id}', [ProductsController::class, 'edit'])->middleware(['checkRole:Администратор']);
 
-    Route::post('cart/add', [ProductsController::class, 'addToCart']);
-    Route::post('cart/favourite', [ProductsController::class, 'addToFavourite']);
+    // Products
+    Route::prefix('products')->group(function () {
+        Route::get('/', [ProductsController::class, 'getAll'])->withoutMiddleware(['auth:api']);
+        Route::get('/{id}', [ProductsController::class, 'getById'])->withoutMiddleware(['auth:api']);
+        Route::post('/', [ProductsController::class, 'create'])->middleware(['checkRole:Администратор']);
+        Route::post('/{id}', [ProductsController::class, 'edit'])->middleware(['checkRole:Администратор']);
+        Route::delete('/{id}', [ProductsController::class, 'delete'])->middleware(['checkRole:Администратор']);
+    });
 
+    // Cart
+    Route::prefix('cart')->group(function () {
+        Route::get('/', [CartController::class, 'getMyProducts']);
+        Route::get('/favourite', [CartController::class, 'getMyProductsFavorite']);
+        Route::post('/add', [CartController::class, 'addToCart']);
+        Route::post('/favourite', [CartController::class, 'addToFavourite']);
+    });
+
+    // Profile
     Route::post('profile/edit', [UserController::class, 'editProfile']);
+
+    // Categories
+    Route::prefix('category')->group(function () {
+        Route::post('/', [CategoryController::class, 'create']);
+        Route::post('/{id}', [CategoryController::class, 'edit']);
+    });
 
 });

@@ -20,11 +20,6 @@ class AuthController extends Controller {
             [
                 'email' => 'required|email',
                 'password' => 'required|min:4|max:18',
-                'first_name' => 'required|min:2|max:18',
-                'middle_name' => 'string|min:2|max:18|nullable',
-                'second_name' => 'required|min:2|max:18',
-                'phone' => 'required|min:9|max:18',
-                'gender' => 'required|in:male,female',
             ]
         );
 
@@ -39,11 +34,11 @@ class AuthController extends Controller {
 
         try {
             $profile = new Profile([
-                'first_name' => $request->first_name,
-                'middle_name' => $request->middle_name,
-                'second_name' => $request->second_name,
-                'phone' => $request->phone,
-                'gender' => $request->gender,
+                'first_name' => null,
+                'middle_name' => null,
+                'second_name' => null,
+                'phone' => null,
+                'gender' => null,
             ]);
 
             $user = User::create([
@@ -55,7 +50,6 @@ class AuthController extends Controller {
             $user->profile()->save($profile);
             $user->update([
                 'profile_id' => $profile->id,
-
             ]);
 
             Auth::attempt($request->only('email', 'password'));
