@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -43,5 +44,17 @@ class UserController extends Controller {
         } catch (Exception $exception) {
             return response()->json(['techError' => $exception->getMessage()], JsonResponse::HTTP_BAD_REQUEST);
         }
+    }
+
+    public function getProfile() {
+        $user = auth()->user();
+
+        return response()->json($user->profile, JsonResponse::HTTP_OK);
+    }
+
+    public function getProfileById($id) {
+        $user = User::find($id);
+
+        return response()->json($user->profile, JsonResponse::HTTP_OK);
     }
 }

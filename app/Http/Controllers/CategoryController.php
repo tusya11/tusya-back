@@ -74,4 +74,16 @@ class CategoryController extends Controller {
             return response()->json(['techError' => $exception->getMessage()], JsonResponse::HTTP_BAD_REQUEST);
         }
     }
+
+    public function index() {
+        $categories = Category::all();
+
+        return response()->json($categories, JsonResponse::HTTP_OK);
+    }
+
+    public function getById($id) {
+        $category = Category::find($id);
+
+        return response()->json($category, JsonResponse::HTTP_OK);
+    }
 }

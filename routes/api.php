@@ -43,12 +43,18 @@ Route::group(['middleware' => 'auth:api'], function () {
     });
 
     // Profile
-    Route::post('profile/edit', [UserController::class, 'editProfile']);
+    Route::prefix('profile')->group(function () {
+        Route::post('/edit', [UserController::class, 'editProfile']);
+        Route::get('/', [UserController::class, 'getProfile']);
+        Route::get('/{id}', [UserController::class, 'getProfileById'])->withoutMiddleware(['auth:api']);
+    });
 
     // Categories
     Route::prefix('category')->group(function () {
         Route::post('/', [CategoryController::class, 'create']);
         Route::post('/{id}', [CategoryController::class, 'edit']);
+        Route::get('/', [CategoryController::class, 'index'])->withoutMiddleware(['auth:api']);
+        Route::get('/{id}', [CategoryController::class, 'getById'])->withoutMiddleware(['auth:api']);
     });
 
 });
