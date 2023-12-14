@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Traits\SaveFileTrait;
 use Exception;
@@ -17,7 +18,7 @@ class ProductsController extends Controller {
         try {
             $products = Product::all();
 
-            return response()->json($products, JsonResponse::HTTP_OK);
+            return response()->json(ProductResource::collection($products), JsonResponse::HTTP_OK);
         } catch (Exception $exception) {
             return response()->json(['techError' => $exception->getMessage()], JsonResponse::HTTP_BAD_REQUEST);
         }
@@ -27,7 +28,7 @@ class ProductsController extends Controller {
         try {
             $product = Product::find($id);
 
-            return response()->json($product, JsonResponse::HTTP_OK);
+            return response()->json(new ProductResource($product), JsonResponse::HTTP_OK);
         } catch (Exception $exception) {
             return response()->json(['techError' => $exception->getMessage()], JsonResponse::HTTP_BAD_REQUEST);
         }

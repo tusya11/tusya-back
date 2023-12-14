@@ -26,4 +26,13 @@ class Product extends Model {
         return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 
+    /**
+     * Get the favorite that owns the Product
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function favorite(): BelongsTo {
+        return $this->belongsTo(Favorite::class, 'product_id', 'id');
+    }
+
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\CartResource;
+use App\Models\Favorite;
 use App\Models\Product;
 use App\Models\Subscription;
 use Exception;
@@ -101,6 +102,7 @@ class CartController extends Controller {
         }
 
         try {
+            $user = auth()->user();
             $product = Product::find($request->product_id);
 
             if (!$product) {
@@ -109,22 +111,16 @@ class CartController extends Controller {
                     'message' => 'Продукт не найден',
                 ], JsonResponse::HTTP_BAD_REQUEST);
             }
-            $existingSubscription = Subscription::where('user_id', Auth::user()->id)->where('product_id', $product->id)->first();
-            if ($existingSubscription) {
-                $existingSubscription->update([
-                    'is_favourite' => $request->is_favorite,
-                ]);
 
-                return response()->json(['message' => 'Продукт успешно добавлен в избранное'], JsonResponse::HTTP_OK);
+            if ($request->is_favorite) {
+                $favoriteProduct = new Favorite([
+                    'product_id' => $product->id,
+                ]);
+                $user->favorite()->save($favoriteProduct);
+            } else {
+
             }
 
-            $subscription = new Subscription([
-                'product_id' => $product->id,
-                'is_favourite' => $request->is_favorite,
-            ]);
-            Auth::user()->subscriptions()->save($subscription);
-
-            return response()->json(['message' => 'Продукт успешно добавлен в избранное'], JsonResponse::HTTP_OK);
         } catch (Exception $exception) {
             return response()->json(['techError' => $exception->getMessage()], JsonResponse::HTTP_BAD_REQUEST);
         }

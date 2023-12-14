@@ -67,11 +67,12 @@ class User extends Authenticatable {
     }
 
     /**
-     * Get the Profile associated with the User
+     * Get all of the favorites for the User
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function subscriptions(): HasMany {
-        return $this->hasMany(Subscription::class, 'user_id', 'id');
+    public function favorites(): HasMany {
+        return $this->hasMany(Favorite::class, 'user_id', 'id');
     }
+
 }
