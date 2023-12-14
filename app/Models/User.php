@@ -10,7 +10,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 
-class User extends Authenticatable {
+class User extends Authenticatable
+{
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
@@ -53,7 +54,8 @@ class User extends Authenticatable {
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function role(): HasOne {
+    public function role(): HasOne
+    {
         return $this->hasOne(Role::class, 'id', 'role_id');
     }
 
@@ -62,16 +64,28 @@ class User extends Authenticatable {
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function profile(): HasOne {
+    public function profile(): HasOne
+    {
         return $this->hasOne(Profile::class);
     }
 
     /**
-     * Get the Profile associated with the User
+     * Get all of the subscriptions for the User
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function subscriptions(): HasMany {
+    public function subscriptions(): HasMany
+    {
         return $this->hasMany(Subscription::class, 'user_id', 'id');
+    }
+
+    /**
+     * Get all of the favorite for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(Favorite::class, 'user_id', 'id');
     }
 }

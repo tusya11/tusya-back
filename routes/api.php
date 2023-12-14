@@ -39,7 +39,7 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('/', [CartController::class, 'getMyProducts']);
         Route::get('/favourite', [CartController::class, 'getMyProductsFavorite']);
         Route::post('/add', [CartController::class, 'addToCart']);
-        Route::post('/favourite', [CartController::class, 'addToFavourite']);
+        Route::post('/favorite', [CartController::class, 'addToFavorite']);
     });
 
     // Profile

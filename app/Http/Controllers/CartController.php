@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\CartResource;
+use App\Models\Favorite;
 use App\Models\Product;
 use App\Models\Subscription;
 use Exception;
@@ -11,15 +12,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class CartController extends Controller {
-    public function getMyProducts() {
-
+class CartController extends Controller
+{
+    public function getMyProducts()
+    {
         try {
-
             $myProducts = [];
 
             foreach (Auth::user()->subscriptions as $subscription) {
                 $myProducts[] = $subscription->product->load('category');
+            }
+
+            if (!count($myProducts)) {
+                return response()->json(['message' => 'Корзина пуста'], JsonResponse::HTTP_OK);
             }
 
             return response()->json(CartResource::collection($myProducts), JsonResponse::HTTP_OK);
@@ -28,7 +33,8 @@ class CartController extends Controller {
         }
     }
 
-    public function getMyProductsFavorite() {
+    public function getMyProductsFavorite()
+    {
         try {
 
             $myProducts = [];
@@ -43,7 +49,8 @@ class CartController extends Controller {
         }
     }
 
-    public function addToCart(Request $request) {
+    public function addToCart(Request $request)
+    {
         $validator = Validator::make(
             $request->all(),
             [
@@ -82,7 +89,8 @@ class CartController extends Controller {
         }
     }
 
-    public function addToFavourite(Request $request) {
+    public function addToFavorite(Request $request)
+    {
         $validator = Validator::make(
             $request->all(),
             [
@@ -109,22 +117,22 @@ class CartController extends Controller {
                     'message' => 'Продукт не найден',
                 ], JsonResponse::HTTP_BAD_REQUEST);
             }
-            $existingSubscription = Subscription::where('user_id', Auth::user()->id)->where('product_id', $product->id)->first();
-            if ($existingSubscription) {
-                $existingSubscription->update([
-                    'is_favourite' => $request->is_favorite,
+
+            $user = auth()->user();
+
+            if ($request->is_favorite) {
+                $favorite = new Favorite([
+                    'product_id' => $product->id,
                 ]);
+                $user->favorites()->save($favorite);
 
                 return response()->json(['message' => 'Продукт успешно добавлен в избранное'], JsonResponse::HTTP_OK);
+            } elseif (!$request->is_favorite) {
+                $user->favorites()->where('product_id', $product->id)->delete();
+
+                return response()->json(['message' => 'Продукт успешно удален из избранного'], JsonResponse::HTTP_OK);
             }
 
-            $subscription = new Subscription([
-                'product_id' => $product->id,
-                'is_favourite' => $request->is_favorite,
-            ]);
-            Auth::user()->subscriptions()->save($subscription);
-
-            return response()->json(['message' => 'Продукт успешно добавлен в избранное'], JsonResponse::HTTP_OK);
         } catch (Exception $exception) {
             return response()->json(['techError' => $exception->getMessage()], JsonResponse::HTTP_BAD_REQUEST);
         }

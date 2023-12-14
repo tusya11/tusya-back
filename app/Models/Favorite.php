@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Subscription extends Model
+class Favorite extends Model
 {
     use HasFactory;
 
@@ -16,7 +16,7 @@ class Subscription extends Model
     ];
 
     /**
-     * Get the user that owns the Subscription
+     * Get the user that owns the Favorite
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -26,12 +26,12 @@ class Subscription extends Model
     }
 
     /**
-     * Get the product that owns the Subscription
+     * Get the product that owns the Favorite
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function product(): BelongsTo
     {
-        return $this->belongsTo(Product::class, 'product_id', 'id');
+        return $this->belongsTo(Product::class, 'id', 'product_id');
     }
 }

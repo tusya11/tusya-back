@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Traits\SaveFileTrait;
 use Exception;
@@ -9,21 +10,23 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class ProductsController extends Controller {
-
+class ProductsController extends Controller
+{
     use SaveFileTrait;
 
-    public function getAll() {
+    public function getAll()
+    {
         try {
             $products = Product::all();
 
-            return response()->json($products, JsonResponse::HTTP_OK);
+            return response()->json(ProductResource::collection($products), JsonResponse::HTTP_OK);
         } catch (Exception $exception) {
             return response()->json(['techError' => $exception->getMessage()], JsonResponse::HTTP_BAD_REQUEST);
         }
     }
 
-    public function getById($id) {
+    public function getById($id)
+    {
         try {
             $product = Product::find($id);
 
@@ -33,7 +36,8 @@ class ProductsController extends Controller {
         }
     }
 
-    public function create(Request $request) {
+    public function create(Request $request)
+    {
         $validator = Validator::make(
             $request->all(),
             [
@@ -69,7 +73,8 @@ class ProductsController extends Controller {
         }
     }
 
-    public function edit(Request $request, $id) {
+    public function edit(Request $request, $id)
+    {
         $validator = Validator::make(
             $request->all(),
             [
@@ -105,7 +110,8 @@ class ProductsController extends Controller {
         }
     }
 
-    public function delete($id) {
+    public function delete($id)
+    {
         $product = Product::find($id);
 
         $product->delete();
