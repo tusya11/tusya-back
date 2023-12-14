@@ -30,7 +30,7 @@ class ProductsController extends Controller
         try {
             $product = Product::find($id);
 
-            return response()->json($product, JsonResponse::HTTP_OK);
+            return response()->json(new ProductResource($product), JsonResponse::HTTP_OK);
         } catch (Exception $exception) {
             return response()->json(['techError' => $exception->getMessage()], JsonResponse::HTTP_BAD_REQUEST);
         }
@@ -116,4 +116,5 @@ class ProductsController extends Controller
 
         $product->delete();
     }
+
 }

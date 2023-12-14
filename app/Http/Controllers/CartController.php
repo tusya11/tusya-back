@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\CartResource;
+use App\Http\Resources\ProductResource;
 use App\Models\Favorite;
 use App\Models\Product;
 use App\Models\Subscription;
@@ -25,22 +26,6 @@ class CartController extends Controller
 
             if (!count($myProducts)) {
                 return response()->json(['message' => 'Корзина пуста'], JsonResponse::HTTP_OK);
-            }
-
-            return response()->json(CartResource::collection($myProducts), JsonResponse::HTTP_OK);
-        } catch (Exception $exception) {
-            return response()->json(['techError' => $exception->getMessage()], JsonResponse::HTTP_BAD_REQUEST);
-        }
-    }
-
-    public function getMyProductsFavorite()
-    {
-        try {
-
-            $myProducts = [];
-
-            foreach (Auth::user()->subscriptions->where('is_favourite') as $subscription) {
-                $myProducts[] = $subscription->product->load('category');
             }
 
             return response()->json(CartResource::collection($myProducts), JsonResponse::HTTP_OK);
@@ -133,6 +118,25 @@ class CartController extends Controller
                 return response()->json(['message' => 'Продукт успешно удален из избранного'], JsonResponse::HTTP_OK);
             }
 
+        } catch (Exception $exception) {
+            return response()->json(['techError' => $exception->getMessage()], JsonResponse::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function getMyProductsFavorite()
+    {
+        try {
+            $myProducts = [];
+
+            foreach (Auth::user()->favorites as $favorite) {
+                $myProducts[] = $favorite->product;
+            }
+
+            if (!count($myProducts)) {
+                return response()->json(['message' => 'Нет товаров в избранном'], JsonResponse::HTTP_OK);
+            }
+
+            return response()->json(ProductResource::collection($myProducts), JsonResponse::HTTP_OK);
         } catch (Exception $exception) {
             return response()->json(['techError' => $exception->getMessage()], JsonResponse::HTTP_BAD_REQUEST);
         }
