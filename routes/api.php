@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\RatingProductController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -55,6 +56,11 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::post('/{id}', [CategoryController::class, 'edit']);
         Route::get('/', [CategoryController::class, 'index'])->withoutMiddleware(['auth:api']);
         Route::get('/{id}', [CategoryController::class, 'getById'])->withoutMiddleware(['auth:api']);
+    });
+
+    // Rating
+    Route::prefix('rating')->group(function () {
+        Route::post('/{id}', [RatingProductController::class, 'setRating']);
     });
 
 });
